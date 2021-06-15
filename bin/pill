@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/pill.rb'
+
+pidx = ARGV.index { |arg| arg.match(/^(-p|--port)$/) }
+port = pidx ? ARGV[pidx + 1].to_i : 4848
+
+cidx = ARGV.index { |arg| arg.match(/^(-c|--conn)$/) }
+conn = cidx ? [ARGV[cidx + 1].to_i, 128].min : 128
+
+app = Pill::Builder.parse_file('config.ru')
+
+pill = Pill.new(port, conn, app)
+
+puts 'Pill web server (v0.4 codename Pak)'
+puts "Maximum connections set to #{conn}"
+puts "Listening on 0.0.0.0:#{port}, CTRL+C to stop"
+
+pill.start
